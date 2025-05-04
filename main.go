@@ -62,7 +62,11 @@ func DetectUsableIPv6Range(ctx context.Context) (*net.IPNet, error) {
 
 	for _, ga := range globals {
 		fmt.Println("global ipv6 found is:", ga)
-
+		err := ensureIPv6LocalRoute(ga.String(), "")
+		if err != nil {
+			fmt.Println("error ensuring:", err.Error())
+			continue
+		}
 		ok, max := probePrefix(ctx, ga)
 		if ok {
 			return max, nil
