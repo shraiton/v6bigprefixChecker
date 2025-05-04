@@ -211,8 +211,7 @@ func randomInPrefix(pfx *net.IPNet, plen int) (net.IP, error) {
 // dnsOK sends a single UDP DNS query from src and waits for a reply.
 func dnsOK(ctx context.Context, src net.IP) bool {
 	dnsServers := []string{
-		"[2001:4860:4860::8888]:53", "[2001:4860:4860::8844]:53",
-		"[2606:4700:4700::1111]:53", "[2606:4700:4700::1001]:53",
+		"[2001:4860:4860::8888]:53",
 	}
 	question := []byte{0xde, 0xad, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
 		1, 'a', 0, 0, 1, 0, 1} // "A a."
@@ -224,7 +223,7 @@ func dnsOK(ctx context.Context, src net.IP) bool {
 		})
 		d := net.Dialer{
 			LocalAddr: &net.UDPAddr{IP: src, Zone: "", Port: 0},
-			Timeout:   200 * time.Millisecond,
+			Timeout:   250 * time.Millisecond,
 			Control:   setFreebind,
 		}
 		c, err := d.DialContext(ctx, "udp6", ns)
@@ -232,7 +231,7 @@ func dnsOK(ctx context.Context, src net.IP) bool {
 			logger.Debugf("dial: %v", err)
 			continue
 		}
-		_ = c.SetDeadline(time.Now().Add(200 * time.Millisecond))
+		_ = c.SetDeadline(time.Now().Add(250 * time.Millisecond))
 		_, err = c.Write(question)
 		if err != nil {
 			logger.Debugf("write: %v", err)
