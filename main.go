@@ -28,7 +28,8 @@ import (
 
 func detect_usable_range() (*net.IPNet, error) {
 
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.InfoLevel)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
