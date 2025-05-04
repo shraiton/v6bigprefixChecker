@@ -12,8 +12,8 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"errors"
-	"flag"
 	"fmt"
+	"os"
 	"sync"
 
 	//"fmt"
@@ -26,19 +26,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// CLI flags
-var (
-	debug = flag.Bool("debug", false, "enable debug output")
-)
+func detect_usable_range() (*net.IPNet, error) {
 
-func main() {
-	flag.Parse()
-
-	// Console friendly formatting
-	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
-	if *debug {
-		log.SetLevel(log.DebugLevel)
-	}
+	log.SetLevel(log.DebugLevel)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -48,6 +38,19 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	log.Infof("Usable IPv6 range: %s", pfx.String())
+
+	return pfx, err
+
+}
+
+func main() {
+	ipnet, err := detect_usable_range()
+	if err != nil {
+		fmt.Println("err")
+		os.Exit(1)
+	}
+
+	fmt.Println(ipnet.String())
 }
 
 // DetectUsableIPv6Range returns the largest working global IPv6 prefix.
