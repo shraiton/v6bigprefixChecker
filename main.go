@@ -13,7 +13,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"flag"
-        "sync"
+	"fmt"
+	"sync"
+
 	//"fmt"
 	"math/big"
 	mrand "math/rand"
@@ -59,6 +61,8 @@ func DetectUsableIPv6Range(ctx context.Context) (*net.IPNet, error) {
 	}
 
 	for _, ga := range globals {
+		fmt.Println("global ipv6 found is:", ga)
+
 		ok, max := probePrefix(ctx, ga)
 		if ok {
 			return max, nil
@@ -106,7 +110,6 @@ func isGlobal(ip net.IP) bool {
 		return true
 	}
 }
-
 
 func probePrefix(ctx context.Context, base *net.IPNet) (bool, *net.IPNet) {
 	basePlen, _ := base.Mask.Size()
